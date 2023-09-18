@@ -1,0 +1,332 @@
+---
+title: "SWong Data 605 Homework 3"
+author: "Susanna Wong"
+date: "2023-09-12"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Assignment Prompt
+
+Problem set 1
+
+(1) What is the rank of the matrix A?
+
+A = $\left[\begin{array}{ccc} 1 & 2 & 3 & 4\\ -1 & 0 & 1 & 3\\ 0 & 1 & -2 & 1\\ 5 & 4 & -2 & -3\\ \end{array}\right]$
+
+(2) Given an mxn matrix where m \> n, what can be the maximum rank?
+    The minimum rank, assuming that the matrix is non-zero?
+
+(3) What is the rank of matrix B?
+
+B = $\left[\begin{array}{ccc} 1 & 2 & 1\\ 3 & 6 & 3\\ 2 & 4 & 2\\ \end{array}\right]$
+
+Problem set 2
+
+Compute the eigenvalues and eigenvectors of the matrix A.
+You'll need to show your work.
+You'll need to write out the characteristic polynomial and show your solution.
+
+A = $\left[\begin{array}{ccc} 1 & 2 & 3\\ 0 & 4 & 5\\ 0 & 0 & 6\\ \end{array}\right]$
+
+Please show your work using an R-markdown document.
+
+# Problem Set 1 {.tabset}
+
+## Question 1 {.tabset}
+
+What is the rank of the matrix A?
+
+A = $\left[\begin{array}{ccc} 1 & 2 & 3 & 4\\ -1 & 0 & 1 & 3\\ 0 & 1 & -2 & 1\\ 5 & 4 & -2 & -3\\ \end{array}\right]$
+
+### Show work
+
+First, we find the row echelon form of matrix A.
+
+**Step 1**
+
+$\left[\begin{array}{cccc} 1 & 2 & 3 & 4\\ -1 & 0 & 1 & 3\\ 5 & 4 & -2 & -3 \end{array}\right]\underrightarrow{R_{2}=R_{1}+R_{2}}\left[\begin{array}{cccc} 1 & 2 & 3 & 4\\ 0 & 2 & 4 & 7\\ 5 & 4 & -2 & -3 \end{array}\right]$
+
+**Step 2**
+
+$-5R_{1}=\left[\begin{array}{cccc} -5 & -10 & -15 & -20\end{array}\right]$
+
+$\left[\begin{array}{cccc} 1 & 2 & 3 & 4\\ 0 & 2 & 4 & 7\\ 5 & 4 & -2 & -3 \end{array}\right]\underrightarrow{R_{3}=-5R_{1}+R_{3}}\left[\begin{array}{cccc} 1 & 2 & 3 & 4\\ 0 & 2 & 4 & 7\\ 0 & -6 & -17 & -23 \end{array}\right]$
+
+**Step 3**
+
+$3R_{2}=\left[\begin{array}{cccc} 0 & 6 & 12 & 21\end{array}\right]$
+
+$\left[\begin{array}{cccc} 1 & 2 & 3 & 4\\ 0 & 2 & 4 & 7\\ 0 & -6 & -17 & -23 \end{array}\right]\underrightarrow{R_{3}=3R_{2}+R_{3}}\left[\begin{array}{cccc} 1 & 2 & 3 & 4\\ 0 & 2 & 4 & 7\\ 0 & 0 & -5 & -2 \end{array}\right]$
+
+Since there are three nonzero rows in the reduced the matrix A, **the rank of Matrix A is 3.**
+
+### R Code
+
+```{r}
+A <- matrix(c(1, -1, 5, 2, 0, 4, 3, 1, -2, 4, 3, -3),nrow = 3)
+A
+```
+
+```{r}
+library(Matrix)
+rankMatrix(A)
+```
+
+## Question 2
+
+Given an mxn matrix where m \> n, what can be the maximum rank?
+The minimum rank, assuming that the matrix is non-zero?
+
+According to Stat Trek, "the **rank** of a matrix is defined as (a) the maximum number of [linearly independent](https://stattrek.com/statistics/dictionary?definition=Linear_dependence_of_vectors) *column* vectors in the matrix" If m \> n, the maximum rank of the matrix is n.
+If the matrix does not contain any elements, the rank of the matrix is 0.
+If the matrix contains at least 1 element, the minimum rank of the matrix is 0.
+
+[Source: Stat Trek](https://stattrek.com/matrix-algebra/matrix-rank#:~:text=Since%20the%20matrix%20has%20more,number%20of%20linearly%20independent%20rows.)
+
+## Question 3 {.tabset}
+
+What is the rank of matrix B?
+
+B = $\left[\begin{array}{ccc} 1 & 2 & 1\\ 3 & 6 & 3\\ 2 & 4 & 2\\ \end{array}\right]$
+
+### Without Calculation
+
+We have a 3x3 matrix.
+The maximum feasible rank of the matrix is the minimum of the dimension, which is 3.
+Since column 1 and column 3 are the same, one of them has to go.
+Column 2 is a multiple of column 1.
+Row 2 and 3 are each multiples of row 1.
+The rank of matrix B is 1.
+
+### Show work
+
+Step 1
+
+$-3R_{1}=\left[\begin{array}{ccc} -3 & -6 & -3\end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & 2 & 1\\ 3 & 6 & 3\\ 2 & 4 & 2 \end{array}\right]\underrightarrow{R_{2}=-3R_{1}+R_{2}}\left[\begin{array}{ccc} 1 & 2 & 1\\ 0 & 0 & 0\\ 2 & 4 & 2 \end{array}\right]$
+
+**Step 2**
+
+$-2R_{1}=\left[\begin{array}{ccc} -2 & -4 & -2\end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & 2 & 1\\ 0 & 0 & 0\\ 2 & 4 & 2 \end{array}\right]\underrightarrow{R_{3}=-2R_{1}+R_{3}}\left[\begin{array}{ccc} 1 & 2 & 1\\ 0 & 0 & 0\\ 0 & 0 & 0 \end{array}\right]$
+
+Since there are one nonzero rows in the reduced the matrix B, **the rank of Matrix B is 1.**
+
+### R Code
+
+```{r}
+B <- matrix(c(1, 3, 2, 2, 6, 4, 1, 3, 2),nrow = 3)
+B
+```
+
+The rank of matrix B is 1.
+
+```{r}
+rankMatrix(B)
+```
+
+# Problem Set 2 {.tabset}
+
+Compute the eigenvalues and eigenvectors of the matrix A.
+You'll need to show your work.
+You'll need to write out the characteristic polynomial and show your solution.
+
+A = $\left[\begin{array}{ccc} 1 & 2 & 3\\ 0 & 4 & 5\\ 0 & 0 & 6\\ \end{array}\right]$
+
+Please show your work using an R-markdown document.
+
+## Eigenvalues {.tabset}
+
+### Show work
+
+$det(\lambda I-A)=0$ $\lambda I=\lambda\left[\begin{array}{ccc} 1 & 0 & 0\\ 0 & 1 & 0\\ 0 & 0 & 1 \end{array}\right]=\left[\begin{array}{ccc} \lambda & 0 & 0\\ 0 & \lambda & 0\\ 0 & 0 & \lambda \end{array}\right]$
+
+$det\left(\left[\begin{array}{ccc} \lambda & 0 & 0\\ 0 & \lambda & 0\\ 0 & 0 & \lambda \end{array}\right]-\left[\begin{array}{ccc} 1 & 2 & 3\\ 0 & 4 & 5\\ 0 & 0 & 6 \end{array}\right]\right)=0$
+
+$det\left(\left[\begin{array}{ccc} \lambda-1 & -2 & -3\\ 0 & \lambda-4 & -5\\ 0 & 0 & \lambda-6 \end{array}\right]\right)=0$
+
+Row 3 has the most zeros.
+Expand on row 3.
+
+$0\left|\begin{array}{cc} -2 & -3\\ \lambda-4 & -5 \end{array}\right|-0\left|\begin{array}{cc} \lambda-1 & -3\\ 0 & -5 \end{array}\right|+(\lambda-6)\left|\begin{array}{cc} \lambda-1 & -2\\ 0 & \lambda-4 \end{array}\right|=0$
+
+$[0]-[0]+(\lambda-6)[(\lambda-1)(\lambda-4)-(0)(-2)]=0$
+
+$(\lambda-6)[(\lambda-1)(\lambda-4)-0]=0$
+
+$(\lambda-6)(\lambda-1)(\lambda-4)=0$
+
+$\lambda=$ 1, 4, or 6
+
+### R Code
+
+```{r}
+A <- matrix(c(1, 0, 0, 2, 4, 0, 3, 5, 6), nrow = 3 )
+A
+```
+
+```{r}
+eigen_A <- eigen(A) 
+eigen_A$values
+```
+
+```{r}
+```
+
+```{r}
+```
+
+## Eigenvectors {.tabset}
+
+### lambda = 1
+
+$\lambda=1$
+
+$\left[\begin{array}{ccc} \lambda-1 & -2 & -3\\ 0 & \lambda-4 & -5\\ 0 & 0 & \lambda-6 \end{array}\right]=\left[\begin{array}{ccc} 1-1 & -2 & -3\\ 0 & 1-4 & -5\\ 0 & 0 & 1-6 \end{array}\right]=\left[\begin{array}{ccc} 0 & -2 & -3\\ 0 & -3 & -5\\ 0 & 0 & -5 \end{array}\right]$
+
+We find the reduced echelon form of the matrix above.
+
+$\left[\begin{array}{ccc} 0 & -2 & -3\\ 0 & -3 & -5\\ 0 & 0 & -5 \end{array}\right]\underrightarrow{R_{1}=-\frac{R_{1}}{2}}\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & -3 & -5\\ 0 & 0 & -5 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & -3 & -5\\ 0 & 0 & -5 \end{array}\right]\underrightarrow{R_{2}=3R_{1}+R_{2}}\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & 0 & -\frac{1}{2}\\ 0 & 0 & -5 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & 0 & -\frac{1}{2}\\ 0 & 0 & -5 \end{array}\right]\underrightarrow{R_{2}=-2R_{2}}\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & 0 & 1\\ 0 & 0 & -5 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & 0 & 1\\ 0 & 0 & -5 \end{array}\right]\underrightarrow{R_{3}=5R_{2}+R_{3}}\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 0 & 1 & \frac{3}{2}\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{array}\right]\underrightarrow{R_{3}=\frac{3}{2}R_{2}+R_{1}}\left[\begin{array}{ccc} 0 & 1 & 0\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{array}\right]$
+
+To find the null space, we solve $\left[\begin{array}{ccc} 0 & 1 & 0\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{array}\right]\left[\begin{array}{c} v_{1}\\ v_{2}\\ v_{3} \end{array}\right]=\left[\begin{array}{c} 0\\ 0\\ 0 \end{array}\right]$
+
+We have $v_{2}=0;v_{3}=0$
+
+$v_{\lambda=1}=\left[\begin{array}{c} 1\\ 0\\ 0 \end{array}\right]$
+
+### lambda = 4
+
+$\lambda=4$
+
+$\left[\begin{array}{ccc} \lambda-1 & -2 & -3\\ 0 & \lambda-4 & -5\\ 0 & 0 & \lambda-6 \end{array}\right]=\left[\begin{array}{ccc} 4-1 & -2 & -3\\ 0 & 4-4 & -5\\ 0 & 0 & 4-6 \end{array}\right]=\left[\begin{array}{ccc} 3 & -2 & -3\\ 0 & 0 & -5\\ 0 & 0 & -2 \end{array}\right]$
+
+We find the reduced echelon form of the matrix above.
+
+$\left[\begin{array}{ccc} 3 & -2 & -3\\ 0 & 0 & -5\\ 0 & 0 & -2 \end{array}\right]\underrightarrow{R_{1}=\frac{R_{1}}{3}}\left[\begin{array}{ccc} 1 & -\frac{2}{3} & -1\\ 0 & 0 & -5\\ 0 & 0 & -2 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & -\frac{2}{3} & -1\\ 0 & 0 & -5\\ 0 & 0 & -2 \end{array}\right]\underrightarrow{R_{2}=-\frac{R_{2}}{5}}\left[\begin{array}{ccc} 1 & -\frac{2}{3} & -1\\ 0 & 0 & 1\\ 0 & 0 & -2 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & -\frac{2}{3} & -1\\ 0 & 0 & 1\\ 0 & 0 & -2 \end{array}\right]\underrightarrow{R_{1}=R_{2}+R_{1}}\left[\begin{array}{ccc} 1 & -\frac{2}{3} & 0\\ 0 & 0 & 1\\ 0 & 0 & -2 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & -\frac{2}{3} & 0\\ 0 & 0 & 1\\ 0 & 0 & -2 \end{array}\right]\underrightarrow{R_{3}=2R_{2}+R_{3}}\left[\begin{array}{ccc} 1 & -\frac{2}{3} & 0\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & -\frac{2}{3} & 0\\ 0 & 0 & 1\\ 0 & 0 & 0 \end{array}\right]\left[\begin{array}{c} v_{1}\\ v_{2}\\ v_{3} \end{array}\right]=\left[\begin{array}{c} 0\\ 0\\ 0 \end{array}\right]$
+
+$v_{1}-\frac{2}{3}v_{2}=0\Longrightarrow v_{1}=\frac{2}{3}v_{2}$
+
+$v_{3}=0$
+
+$v_{\lambda=4}=\left[\begin{array}{c} \frac{2}{3}\\ 1\\ 0 \end{array}\right]$
+
+### lambda = 6
+
+$\lambda=6$
+
+$\left[\begin{array}{ccc} \lambda-1 & -2 & -3\\ 0 & \lambda-4 & -5\\ 0 & 0 & \lambda-6 \end{array}\right]=\left[\begin{array}{ccc} 6-1 & -2 & -3\\ 0 & 6-4 & -5\\ 0 & 0 & 6-6 \end{array}\right]=\left[\begin{array}{ccc} 5 & -2 & -3\\ 0 & 2 & -5\\ 0 & 0 & 0 \end{array}\right]$
+
+We find the reduced echelon form of the matrix above.
+
+$\left[\begin{array}{ccc} 5 & -2 & -3\\ 0 & 2 & -5\\ 0 & 0 & 0 \end{array}\right]\underrightarrow{R_{1}=\frac{R_{1}}{5}}\left[\begin{array}{ccc} 1 & -\frac{2}{5} & -\frac{3}{5}\\ 0 & 2 & -5\\ 0 & 0 & 0 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & -\frac{2}{5} & -\frac{3}{5}\\ 0 & 2 & -5\\ 0 & 0 & 0 \end{array}\right]\underrightarrow{R_{2}=\frac{1}{2}R_{2}}\left[\begin{array}{ccc} 1 & -\frac{2}{5} & -\frac{3}{5}\\ 0 & 1 & -\frac{5}{2}\\ 0 & 0 & 0 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & -\frac{2}{5} & -\frac{3}{5}\\ 0 & 1 & -\frac{5}{2}\\ 0 & 0 & 0 \end{array}\right]\underrightarrow{R_{1}=-\frac{2}{5}R_{2}+R_{1}}\left[\begin{array}{ccc} 1 & 0 & -\frac{8}{5}\\ 0 & 1 & -\frac{5}{2}\\ 0 & 0 & 0 \end{array}\right]$
+
+$\left[\begin{array}{ccc} 1 & 0 & -\frac{8}{5}\\ 0 & 1 & -\frac{5}{2}\\ 0 & 0 & 0 \end{array}\right]\left[\begin{array}{c} v_{1}\\ v_{2}\\ v_{3} \end{array}\right]=\left[\begin{array}{c} 0\\ 0\\ 0 \end{array}\right]$
+
+$v_{1}-\frac{8}{5}v_{3}=0\Longrightarrow v_{1}=\frac{8}{5}v_{3}$
+
+$v_{2}-\frac{5}{2}v_{3}=0\Longrightarrow v_{2}=\frac{5}{2}v_{3}$
+
+$v_{\lambda=6}=\left[\begin{array}{c} \frac{8}{5}\\ \frac{5}{2}\\ 1 \end{array}\right]$
+
+### R Code
+
+The eigenvectors does not match my calculations.
+Perhaps it is normalized.
+
+```{r}
+eigen_A$vectors
+```
+
+Normalized eigenvectors = $\frac{\left[\begin{array}{c} v_{1}\\ v_{2}\\ \vdots\\ v_{n} \end{array}\right]}{\sqrt{v_{1}^{2}+v_{2}^{2}+\cdots+v_{n}^{2}}}$
+
+```{r}
+eigen_A$vectors
+```
+
+```{r}
+norm_eigen_lambda1 <- matrix(c(1,0,0),nrow=3)/sqrt(1^2+0^2+0^2)
+norm_eigen_lambda1
+```
+
+```{r}
+norm_eigen_lambda4 <- matrix(c(2/3,1,0),nrow=3)/sqrt((2/3)^2+1^2+0^2)
+norm_eigen_lambda4
+```
+
+```{r}
+norm_eigen_lambda6 <- matrix(c(8/5,5/2,1),nrow=3)/sqrt((8/5)^2+(5/2)^2+1^2)
+norm_eigen_lambda6
+```
+
+```{r}
+norm_eigenvector <-cbind(norm_eigen_lambda6, norm_eigen_lambda4, norm_eigen_lambda1)
+norm_eigenvector
+```
+
+Now we check if the our calculated normalized eigenvector matches with the output of the R code.
+The first element in column one and column to do not match.
+However, when displaying and comparing the eigenvectors, it appears to match.
+
+```{r}
+norm_eigenvector == eigen_A$vectors
+```
+
+```{r}
+norm_eigenvector
+```
+
+```{r}
+eigen_A$vectors
+```
+
+```{r}
+norm_eigen_lambda0 <- matrix(c(-1,0,1),nrow=3)/sqrt(1^2+(-1)^2+0^2)
+norm_eigen_lambda0
+```
+
+Upon [researching](https://zief0002.github.io/matrix-algebra/eigenvalues-and-eigenvectors.html), R does return the normalized eigenvector.
+
+# Source
+
+**Matrix Rank**
+
+[Stat trek](https://stattrek.com/matrix-algebra/matrix-rank#){.uri}
+
+**Normalized Eigenvectors**
+
+[Matrix Algebra for Educational Scientist](https://zief0002.github.io/matrix-algebra/eigenvalues-and-eigenvectors.html){.uri}
+
+[Eigenvector](https://byjus.com/jee/normalized-and-decomposition-of-eigenvectors/#){.uri}
