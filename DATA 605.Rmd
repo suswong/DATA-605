@@ -406,6 +406,7 @@ write.csv(test, file="CrabAgesPrediction.csv", row.names = FALSE)
 
 My score for kaggle is 1.48236.
 https://www.kaggle.com/mssusanna
+https://github.com/suswong/DATA-605/blob/main/Kaggle%20submission.png
 
 ## Source
 
