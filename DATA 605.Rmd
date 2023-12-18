@@ -1,0 +1,337 @@
+---
+title: "DATA 605 Final Part 2"
+output: html_document
+date: "2023-12-05"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 2 {.tabset}
+
+You are to register for Kaggle.com (free) and compete in the Regression with a Crab Age Dataset competition. <https://www.kaggle.com/competitions/playground-series-s3e16> I want you to do the following.
+
+```{r}
+raw_train <- read.csv("https://raw.githubusercontent.com/suswong/DATA-605/main/crabagetrain.csv")
+test <- read.csv("https://raw.githubusercontent.com/suswong/DATA-605/main/crabagetest.csv")
+```
+
+# Packages
+
+```{r}
+library(PerformanceAnalytics)
+library(ggplot2)
+library(dplyr)
+library(DT)
+library(matrixcalc)
+library(correlation)
+library(e1071)
+library(MASS)
+library(car)
+```
+
+# Descriptive and Inferential Statistics {.tabset}
+
+Provide univariate descriptive statistics and appropriate plots for the training data set. Provide a scatterplot matrix for at least two of the independent variables and the dependent variable. Derive a correlation matrix for any three quantitative variables in the dataset. Test the hypotheses that the correlations between each pairwise set of variables is 0 and provide an 80% confidence interval. Discuss the meaning of your analysis. Would you be worried about familywise error? Why or why not?
+
+## Data Preparation
+
+There are no missing values and both test ans train data have similar distributions.
+
+```{r}
+summary(raw_train)
+```
+
+```{r}
+summary(test)
+```
+
+```{r}
+unique(raw_train[2:10]) # This removes any duplicates. It results in the same observations as the original train data set
+```
+
+We create a new data set that does not include the `id` column.
+
+```{r}
+train <- raw_train[2:10] #drop the 'id' column
+```
+
+## Visualization of a Correlation Matrix
+
+Below is a visualization of a correlation matrix. On the top right is the absolute value of the correlation. On the bottom left is the bivariate scatter plot. On the diagonal, is the histogram of each variable.
+
+Since we want to predict the crab age, the dependent variable is `age`.
+
+|       Variable       |                                                                                               |
+|:-------------------:|---------------------------------------------------|
+|  Dependent Variable  | `Age`                                                                                         |
+| Independent Variable | `Length`, `Diameter`, `Height`, `Weight`, `Shucked.Weight` , `Viscera.Weight`, `Shell.Weight` |
+
+**Distribution of the Variables**
+
+Out of the variables, `Shell.Weight` has the highest correlation with `Age` and `Shucked.Weight` has the least correlation with `Age`.
+
+The following variables are skewed to the right: `Weight`, `Shucked.Weight` , `Viscera.Weight`, `Shell.Weight`, `Age`, `Height`
+
+The following variables are skewed to the left: `Length`, `Diameter`
+
+**Correlation**
+
+The independent variables appears to have a positive relationship with age. However, it is not perfectly linear relationship (see the red curve on the scatterplot). Since the absolute correlation coefficient between the predictors (Length`, `Diameter`, `Height`, `Weight`, `Shucked.Weight` , `Viscera.Weight`, `Shell.Weight`) is greater than 0.7, multicollinearity is present. 
+
+
+```{r}
+suppressWarnings({
+chart.Correlation(train[2:9], histogram = TRUE, method = "pearson")})
+```
+
+
+### Age
+
+Observing the histogram and the box plot, there are some outliers for the crab age and it is skewed to the right. 
+
+```{r}
+par(mfrow=c(1,2))
+hist(train$Age, main = "Histogram of Age", xlab = "Age")
+boxplot(train$Age, main = "Boxplot of Age", ylab = "Age")
+```
+
+### Length
+
+Observing the histogram and the boxplot, there are some outliers for the crab length and it is skewed to the length. 
+
+```{r}
+par(mfrow=c(1,2))
+hist(train$Length, main = "Histogram of Crab Length", xlab = "Length")
+boxplot(train$Length, main = "Boxplot of Crab Length", ylab = "Length")
+```
+
+### Diameter
+
+Observing the histogram and the boxplot, there are some outliers for the crab diameter and it is skewed to the right. 
+
+```{r}
+par(mfrow=c(1,2))
+hist(train$Diameter, main = "Histogram of Crab Diameter", xlab = "Diameter")
+boxplot(train$Diameter, main = "Boxplot of Crab Diameter", ylab = "Diameter")
+```
+
+### Height
+
+Observing the histogram and the boxplot, there are some outliers for the crab height and it is skewed to the right. 
+
+```{r}
+par(mfrow=c(1,2))
+hist(train$Height, main = "Histogram of Crab Height", xlab = "Height")
+boxplot(train$Height, main = "Boxplot of Crab Height", ylab = "Height")
+```
+
+### Weight
+
+Observing the histogram and the boxplot, there are some outliers for the crab weight and it is skewed to the right. 
+
+```{r}
+par(mfrow=c(1,2))
+hist(train$Weight, main = "Histogram of Crab Weight", xlab = "Weight")
+boxplot(train$Weight, main = "Boxplot of Crab Weight", ylab = "Weight")
+```
+
+
+## Correlation Test Between the Various Weight Variables
+
+Test the hypotheses that the correlations between each pairwise set of variables is 0 and provide an 80% confidence interval. Discuss the meaning of your analysis.
+
+Null Hypothesis: There are no correlation between each pairwise set of variables
+Alternative Hypothesis: There is a correlation between each pairwise set of variables.
+
+```{r}
+#correlation(train,
+#  include_factors = TRUE, method = "auto", confide
+#)
+```
+
+```{r}
+suppressWarnings({
+chart.Correlation(train[5:9], histogram = TRUE, method = "pearson")})
+```
+
+### Shell Weight v. Shucked Weight
+
+The p-value is 2.2e-16, which is less than 0.05. We can conclude they are significant correlated with a correlation of about 0.91. 
+
+```{r}
+cor.test(train$Shell.Weight, train$Shucked.Weight, conf.level = 0.8)
+```
+### Shell Weight v. Viscera Weight
+
+The p-value is 2.2e-16, which is less than 0.05. We can conclude they are significant correlated with a correlation of about 0.93. 
+
+```{r}
+cor.test(train$Shell.Weight, train$Viscera.Weight, conf.level = 0.8)
+```
+### Shell Weight v. Shucked Weight
+
+The p-value is 2.2e-16, which is less than 0.05. We can conclude they are significant correlated with a correlation of about 0.94. 
+
+```{r}
+cor.test(train$Shucked.Weight, train$Viscera.Weight, conf.level = 0.8)
+```
+### Interpretation
+
+Each pair of variables are highly correlated and has p-value less than 0.5. We reject the null hypothesis. As mention previously, the absolute correlation coefficient between the predictors (Length`, `Diameter`, `Height`, `Weight`, `Shucked.Weight` , `Viscera.Weight`, `Shell.Weight`) is greater than 0.7, so multicollinearity is present. 
+
+Family wise error occurs when we are testing multiple hypothesis, increasing the Type I error (false positive). Since we were performing multiple correlation tests, we should be worry about this error. In addition, we can calculate the family wise error.
+
+$FWE\leq1-(1-\alpha)^c$ 
+
+Since we used 80% confidence interval, $\alpha=0.2$ and $c=3$. The calculated family wise error is 48.8%. 
+
+```{r}
+1-(1-0.2)**3
+```
+
+We can use Bonferroni Correction to control the probability of Type I error by adjusting for the significance level.
+
+```{r}
+0.2/3
+```
+
+# Linear Algebra and Correlation {.tabset}
+
+Invert your correlation matrix from above. (This is known as the precision matrix and contains variance inflation factors on the diagonal.) Multiply the correlation matrix by the precision matrix, and then multiply the precision matrix by the correlation matrix. Conduct LDU decomposition on the matrix.
+
+```{r}
+correlation_matrix <- cor(train[2:9])
+
+datatable(correlation_matrix, caption = 'Table 1: This is the correlation matrix')
+```
+
+```{r}
+precision_matrix <- solve(correlation_matrix)
+datatable(precision_matrix, caption = 'Table 2: This is the prescision matrix')
+```
+
+## Multiplying the Correlation Matrix by the Precision Matrix
+
+```{r}
+cor_pm <- correlation_matrix %*% precision_matrix
+
+datatable(cor_pm, caption = 'Table 3: This is the result of multiplying the correlation matrix by the precision matrix')
+```
+
+```{r}
+pm_cor <- precision_matrix %*% correlation_matrix
+
+datatable(pm_cor, caption = 'Table 4: This is the result of multiplying the precision matrix by the correlation matrix')
+```
+Regardless, we would get the identity matrix.
+
+```{r}
+round(cor_pm, digits=5)
+```
+
+```{r}
+round(pm_cor, digits=5)
+```
+
+## Lu Decomposition
+
+```{r}
+lu_corr <- lu.decomposition(correlation)
+lu_corr
+```
+
+
+
+# Calculus-Based Probability & Statistics {.tabset}
+
+Many times, it makes sense to fit a closed form distribution to data. Select a variable in the Kaggle.com training dataset that is skewed to the right, shift it so that the minimum value is absolutely above zero if necessary. Then load the MASS package and run fitdistr to fit an exponential probability density function. (See <https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/fitdistr.html> ). Find the optimal value of  for this distribution, and then take 1000 samples from this exponential distribution using this value (e.g., rexp(1000, )). Plot a histogram and compare it with a histogram of your original variable. Using the exponential pdf, find the 5th and 95th percentiles using the cumulative distribution function (CDF). Also generate a 95% confidence interval from the empirical data, assuming normality. Finally, provide the empirical 5th percentile and 95th percentile of the data. Discuss.
+
+The crab's age is skewed to the right the most. In fact, it has a skewness of 1.092897.
+
+```{r}
+skewness(train[2:9])
+```
+The minimum crab age is 1, which is greater than 0.  There is no need to shift it because the minimum value is absolutely above zero already. 
+
+```{r}
+min(train$Age)
+```
+
+```{r}
+epd <- fitdistr(train$Age, "exponential")
+
+lambda <- epd$estimate
+
+exp_distribution <- rexp(1000, lambda)
+
+```
+
+## Histogram 
+
+Both histogram is skewed right. However, the original data has a left tail while the other does not. 
+
+```{r}
+par(mfrow=c(1,2))
+hist(train$Age, main = "Histogram of Crab Age", xlab = "Age")
+hist(exp_distribution, main = "Histogram of Crab Age", xlab = "Age")
+```
+
+Generate a 95% confidence interval from the empirical data, assuming normality
+
+```{r}
+mean <- mean(train$Age)
+n <- nrow(train)
+sd <- sd(train$Age)
+
+se <- qnorm(0.975)*sd/sqrt(n)
+
+mean-se
+mean+se
+```
+
+```{r}
+quantile(exp_distribution,c(0.05,0.95))
+```
+
+```{r}
+quantile(train$Age,c(0.05,0.95))
+```
+
+# Modeling {.tabset}
+
+Build some type of multiple regression model and submit your model to the competition board. Provide your complete model summary and results with analysis. Report your Kaggle.com user name and score.
+
+Using backward stepwise regression, we find the following model. The p values for all the independent variables are less than 0.05 which indicated they are strongly related to the dependent variable Age. The F-statisics is large. The adjusted R-squared is 0.5392, which means the model can explain 53.92% of variance in the crabs age. 
+
+```{r}
+model1 <- step(lm( Age ~ Length + Diameter + Height + Weight + 
+    Shucked.Weight + Viscera.Weight + Shell.Weight, data = train), direction = "backward")
+summary(model)
+```
+
+```{r}
+par(mfrow=c(2,2)) 
+plot(model1)
+```
+# Multicollinearity
+
+```{r}
+vif(model1)
+```
+
+## Source
+
+https://mathstat.slu.edu/~speegled/_book/SimulationRV.html
+https://rpubs.com/finnstats/skewness-in-R
+http://www.sthda.com/english/wiki/correlation-test-between-two-variables-in-r
+https://en.wikipedia.org/wiki/Bonferroni_correction
